@@ -160,7 +160,7 @@
     },
 
     getDeviceName: function(deviceIdStr) {
-        var deviceId = UTF8ToString(deviceIdStr)
+        var deviceId = UTF8ToString(deviceIdStr);
         var deviceName = null;
         {
             var device = Data.midiAccess.inputs.get(deviceId);
@@ -186,126 +186,144 @@
         return buffer;
     },
 
-    sendMidiNoteOff: function(deviceId, channel, note, velocity) {
+    sendMidiNoteOff: function(deviceIdStr, channel, note, velocity) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0x80 | channel, note, velocity]);
         }
     },
 
-    sendMidiNoteOn: function(deviceId, channel, note, velocity) {
+    sendMidiNoteOn: function(deviceIdStr, channel, note, velocity) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0x90 | channel, note, velocity]);
         }
     },
     
-    sendMidiPolyphonicAftertouch: function(deviceId, channel, note, pressure) {
+    sendMidiPolyphonicAftertouch: function(deviceIdStr, channel, note, pressure) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xa0 | channel, note, pressure]);
         }
     },
 
-    sendMidiControlChange: function(deviceId, channel, func, value) {
+    sendMidiControlChange: function(deviceIdStr, channel, func, value) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xb0 | channel, func, value]);
         }
     },
 
-    sendMidiProgramChange: function(deviceId, channel, program) {
+    sendMidiProgramChange: function(deviceIdStr, channel, program) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xc0 | channel, program]);
         }
     },
 
-    sendMidiChannelAftertouch: function(deviceId, channel, pressure) {
+    sendMidiChannelAftertouch: function(deviceIdStr, channel, pressure) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xd0 | channel, pressure]);
         }
     },
 
-    sendMidiPitchWheel: function(deviceId, channel, amount) {
+    sendMidiPitchWheel: function(deviceIdStr, channel, amount) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xe0 | channel, amount & 0x7f, (amount >> 7) & 0x7f]);
         }
     },
 
-    sendMidiSystemExclusive: function(deviceId, data) {
+    sendMidiSystemExclusive: function(deviceIdStr, data) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send(data);
         }
     },
 
-    sendMidiTimeCodeQuarterFrame: function(deviceId, value) {
+    sendMidiTimeCodeQuarterFrame: function(deviceIdStr, value) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xf1, value]);
         }
     },
 
-    sendMidiSongPositionPointer: function(deviceId, position) {
+    sendMidiSongPositionPointer: function(deviceIdStr, position) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xf2, position & 0x7f, (position >> 7) & 0x7f]);
         }
     },
 
-    sendMidiSongSelect: function(deviceId, song) {
+    sendMidiSongSelect: function(deviceIdStr, song) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xf3, song]);
         }
     },
 
-    sendMidiTuneRequest: function(deviceId) {
+    sendMidiTuneRequest: function(deviceIdStr) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xf6]);
         }
     },
 
-    sendMidiTimingClock: function(deviceId) {
+    sendMidiTimingClock: function(deviceIdStr) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xf8]);
         }
     },
 
-    sendMidiStart: function(deviceId) {
+    sendMidiStart: function(deviceIdStr) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xfa]);
         }
     },
 
-    sendMidiContinue: function(deviceId) {
+    sendMidiContinue: function(deviceIdStr) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xfb]);
         }
     },
 
-    sendMidiStop: function(deviceId) {
+    sendMidiStop: function(deviceIdStr) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xfc]);
         }
     },
 
-    sendMidiActiveSensing: function(deviceId) {
+    sendMidiActiveSensing: function(deviceIdStr) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xfe]);
         }
     },
 
-    sendMidiReset: function(deviceId) {
+    sendMidiReset: function(deviceIdStr) {
+        var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
             device.send([0xff]);
