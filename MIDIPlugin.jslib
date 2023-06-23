@@ -186,6 +186,33 @@
         return buffer;
     },
 
+    getVendorId: function(deviceIdStr) {
+        var deviceId = UTF8ToString(deviceIdStr);
+        var manufacturerName = null;
+        {
+            var device = Data.midiAccess.inputs.get(deviceId);
+            if (device != null) {
+                manufacturerName = device.manufacturer;
+            }
+        }
+
+        if (manufacturerName == null)
+        {
+            var device = Data.midiAccess.outputs.get(deviceId);
+            if (device != null) {
+                manufacturerName = device.manufacturer;
+            }
+        }
+        if (manufacturerName == null) {
+            return null;
+        }
+
+        var bufferSize = lengthBytesUTF8(manufacturerName) + 1;
+        var buffer = _malloc(bufferSize);
+        stringToUTF8(manufacturerName, buffer, bufferSize);
+        return buffer;
+    },
+
     sendMidiNoteOff: function(deviceIdStr, channel, note, velocity) {
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
