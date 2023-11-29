@@ -160,6 +160,9 @@
     },
 
     getDeviceName: function(deviceIdStr) {
+        if (Data.midiAccess == null) {
+            return null;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var deviceName = null;
         {
@@ -187,6 +190,9 @@
     },
 
     getVendorId: function(deviceIdStr) {
+        if (Data.midiAccess == null) {
+            return null;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var manufacturerName = null;
         {
@@ -214,6 +220,9 @@
     },
 
     sendMidiNoteOff: function(deviceIdStr, channel, note, velocity) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -222,6 +231,9 @@
     },
 
     sendMidiNoteOn: function(deviceIdStr, channel, note, velocity) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -230,6 +242,9 @@
     },
     
     sendMidiPolyphonicAftertouch: function(deviceIdStr, channel, note, pressure) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -238,6 +253,9 @@
     },
 
     sendMidiControlChange: function(deviceIdStr, channel, func, value) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -246,6 +264,9 @@
     },
 
     sendMidiProgramChange: function(deviceIdStr, channel, program) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -254,6 +275,9 @@
     },
 
     sendMidiChannelAftertouch: function(deviceIdStr, channel, pressure) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -262,6 +286,9 @@
     },
 
     sendMidiPitchWheel: function(deviceIdStr, channel, amount) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -270,6 +297,9 @@
     },
 
     sendMidiSystemExclusive: function(deviceIdStr, data) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -278,6 +308,9 @@
     },
 
     sendMidiTimeCodeQuarterFrame: function(deviceIdStr, value) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -286,6 +319,9 @@
     },
 
     sendMidiSongPositionPointer: function(deviceIdStr, position) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -294,6 +330,9 @@
     },
 
     sendMidiSongSelect: function(deviceIdStr, song) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -302,6 +341,9 @@
     },
 
     sendMidiTuneRequest: function(deviceIdStr) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -310,6 +352,9 @@
     },
 
     sendMidiTimingClock: function(deviceIdStr) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -318,6 +363,9 @@
     },
 
     sendMidiStart: function(deviceIdStr) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -326,6 +374,9 @@
     },
 
     sendMidiContinue: function(deviceIdStr) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -334,6 +385,9 @@
     },
 
     sendMidiStop: function(deviceIdStr) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -342,6 +396,9 @@
     },
 
     sendMidiActiveSensing: function(deviceIdStr) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
@@ -350,6 +407,9 @@
     },
 
     sendMidiReset: function(deviceIdStr) {
+        if (Data.midiAccess == null) {
+            return;
+        }
         var deviceId = UTF8ToString(deviceIdStr);
         var device = Data.midiAccess.outputs.get(deviceId);
         if (device != null) {
