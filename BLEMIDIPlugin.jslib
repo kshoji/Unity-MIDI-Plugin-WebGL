@@ -338,7 +338,7 @@
             if (message == null || message.length <= 1) {
                 return;
             }
-            for (let i = 1; i < message.length; i++) {
+            for (var i = 1; i < message.length; i++) {
                 Ble.ParseMidiMessage(message[0], message[i], targetId);
             }
         },
@@ -350,7 +350,7 @@
         Ble.attachedDevices = new Map();
 
         setInterval(function() {
-            Ble.outputs.forEach((device, deviceId, map) => {
+            Ble.outputs.forEach(function (device, deviceId, map) {
                 if (Ble.outputBuffers.has(deviceId)) {
                     var buffer = Ble.outputBuffers.get(deviceId);
                     Ble.outputBuffers.set(deviceId, []);
@@ -366,7 +366,7 @@
         navigator.bluetooth.requestDevice({
             filters: [{ services: ['03b80e5a-ede8-4b33-a751-6ce34ec4c700'] }]
         })
-        .then(device => {
+        .then(function (device) {
             device.addEventListener('gattserverdisconnected', function(event) {
                 Ble.attachedDevices.delete(event.target.id);
 
@@ -386,18 +386,18 @@
             // Attempts to connect to remote GATT Server.
             return device.gatt.connect();
         })
-        .then(server => {
+        .then(function (server) {
             return server.getPrimaryService('03b80e5a-ede8-4b33-a751-6ce34ec4c700');
         })
-        .then(service => {
+        .then(function (service) {
             return service.getCharacteristic('7772e5db-3868-4112-a1a9-f2669d106bf3');
         })
-        .then(characteristic => {
+        .then(function (characteristic) {
             Ble.outputs.set(characteristic.service.device.id, characteristic);
 
             return characteristic.startNotifications();
         })
-        .then(characteristic => {
+        .then(function (characteristic) {
             // Set up event listener for when characteristic value changes.
             characteristic.addEventListener('characteristicvaluechanged', function(event) {
                 Ble.ParseMidi(new Uint8Array(event.target.value.buffer), event.target.service.device.id);
@@ -406,7 +406,7 @@
             unityInstance.SendMessage('MidiManager', 'OnMidiInputDeviceAttached', characteristic.service.device.id);
             unityInstance.SendMessage('MidiManager', 'OnMidiOutputDeviceAttached', characteristic.service.device.id);
         })
-        .catch(error => {
+        .catch(function (error) {
             console.log('Error: ' + error);
         });
     },
@@ -457,7 +457,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -472,7 +472,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -487,7 +487,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -502,7 +502,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -517,7 +517,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -532,7 +532,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -547,7 +547,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -562,7 +562,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -577,7 +577,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -592,7 +592,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -607,7 +607,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -622,7 +622,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -637,7 +637,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -652,7 +652,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -667,7 +667,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -682,7 +682,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -697,7 +697,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
@@ -712,7 +712,7 @@
             Ble.outputBuffers.set(deviceId, []);
         }
         var buffer = Ble.outputBuffers.get(deviceId);
-        let t = performance.now() % 8192;
+        var t = performance.now() % 8192;
         if (buffer.length == 0) {
             buffer.push(((t >> 7) & 0x3f) | 0x80);
         }
