@@ -11,6 +11,7 @@
         outputs: null,
         outputBuffers: null,
         attachedDevices: null,
+        manufacturerNames: null,
 
         midiStates: null,
         midiEventKinds: null,
@@ -342,12 +343,84 @@
                 Ble.ParseMidiMessage(message[0], message[i], targetId);
             }
         },
+
+        tryAtMost: function (tries, executor) {
+            --tries;
+            return new Promise(executor)
+                .catch(err => tries > 0 ? Ble.tryAtMost(tries, executor) : Promise.reject(err));
+        },
+
+        midiServicePromise: function (device) {
+            return function (resolve, reject) {
+                device.gatt.connect()
+                .then(function (server) {
+                    const midiService = server.getPrimaryService('03b80e5a-ede8-4b33-a751-6ce34ec4c700');
+                    midiService.then(function (service) {
+                        return service.getCharacteristic('7772e5db-3868-4112-a1a9-f2669d106bf3');
+                    })
+                    .then(function (characteristic) {
+                        Ble.outputs.set(characteristic.service.device.id, characteristic);
+                        return characteristic.startNotifications();
+                    })
+                    .then(function (characteristic) {
+                        // Set up event listener for when characteristic value changes.
+                        characteristic.addEventListener('characteristicvaluechanged', function(event) {
+                            Ble.ParseMidi(new Uint8Array(event.target.value.buffer), event.target.service.device.id);
+                        });
+
+                        resolve();
+                    })
+                    .catch(function (error) {
+                        // console.log('midiServicePromise failed:' + error);
+                        reject();
+                    });
+                })
+                .catch(function (error) {
+                    // console.log('midiServicePromise failed:' + error);
+                    reject();
+                });
+            };
+        },
+
+        deviceInformationServicePromise: function (device) {
+            return function (resolve, reject) {
+                device.gatt.connect()
+                .then(function (server) {
+                    // Device Infomation Service
+                    const decoder = new TextDecoder('utf-8');
+                    const deviceInformationService = server.getPrimaryService('device_information');
+
+                    deviceInformationService.then(function (service) {
+                        // Manufacturer Name
+                        return service.getCharacteristic('manufacturer_name_string');
+                    })
+                    .then(function (manufacturerName) {
+                        return manufacturerName.readValue();
+                    })
+                    .then(function (value) {
+                        if (value != null) {
+                            Ble.manufacturerNames.set(device.id, decoder.decode(value));
+                        }
+                        resolve();
+                    })
+                    .catch(function (error) {
+                        // console.log('deviceInformationServicePromise failed:' + error);
+                        reject();
+                    });
+                })
+                .catch(function (error) {
+                    // console.log('deviceInformationServicePromise failed:' + error);
+                    reject();
+                });
+            };
+        },
     },
 
     bleMidiPluginInitialize: function () {
         Ble.outputs = new Map();
         Ble.outputBuffers = new Map();
         Ble.attachedDevices = new Map();
+        Ble.manufacturerNames = new Map();
 
         setInterval(function() {
             Ble.outputs.forEach(function (device, deviceId, map) {
@@ -364,7 +437,8 @@
 
     startScanBluetoothMidiDevices: function () {
         navigator.bluetooth.requestDevice({
-            filters: [{ services: ['03b80e5a-ede8-4b33-a751-6ce34ec4c700'] }]
+            filters: [{ services: ['03b80e5a-ede8-4b33-a751-6ce34ec4c700'] }],
+            optionalServices: [ 'device_information' ]
         })
         .then(function (device) {
             device.addEventListener('gattserverdisconnected', function(event) {
@@ -383,31 +457,24 @@
             }
             Ble.attachedDevices.set(device.id, device);
 
-            // Attempts to connect to remote GATT Server.
-            return device.gatt.connect();
-        })
-        .then(function (server) {
-            return server.getPrimaryService('03b80e5a-ede8-4b33-a751-6ce34ec4c700');
-        })
-        .then(function (service) {
-            return service.getCharacteristic('7772e5db-3868-4112-a1a9-f2669d106bf3');
-        })
-        .then(function (characteristic) {
-            Ble.outputs.set(characteristic.service.device.id, characteristic);
-
-            return characteristic.startNotifications();
-        })
-        .then(function (characteristic) {
-            // Set up event listener for when characteristic value changes.
-            characteristic.addEventListener('characteristicvaluechanged', function(event) {
-                Ble.ParseMidi(new Uint8Array(event.target.value.buffer), event.target.service.device.id);
+            const midiServicePromise = Ble.midiServicePromise(device)
+            Ble.tryAtMost(3, midiServicePromise)
+            .then(() => {
+                // connected successfully, then get device information
+                const deviceInformationServicePromise = Ble.deviceInformationServicePromise(device);
+                Ble.tryAtMost(3, deviceInformationServicePromise)
+                .then(() => {})
+                .catch(function (error) {
+                    // console.log('deviceInformationServicePromise retry failed:' + error);
+                })
+                .then(() => {
+                    unityInstance.SendMessage('MidiManager', 'OnMidiInputDeviceAttached', device.id);
+                    unityInstance.SendMessage('MidiManager', 'OnMidiOutputDeviceAttached', device.id);
+                });
+            })
+            .catch(function (error) {
+                // console.log('midiServicePromise retry failed:' + error);
             });
-
-            unityInstance.SendMessage('MidiManager', 'OnMidiInputDeviceAttached', characteristic.service.device.id);
-            unityInstance.SendMessage('MidiManager', 'OnMidiOutputDeviceAttached', characteristic.service.device.id);
-        })
-        .catch(function (error) {
-            console.log('Error: ' + error);
         });
     },
 
@@ -433,13 +500,7 @@
 
     getBleVendorId: function(deviceIdStr) {
         var deviceId = UTF8ToString(deviceIdStr);
-        var manufacturerName = null;
-        {
-            var device = Ble.attachedDevices.get(deviceId);
-            if (device != null) {
-                manufacturerName = device.manufacturer;
-            }
-        }
+        var manufacturerName = Ble.manufacturerNames.get(deviceId);
 
         if (manufacturerName == null) {
             return null;
