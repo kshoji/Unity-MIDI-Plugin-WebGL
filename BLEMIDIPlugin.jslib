@@ -347,7 +347,13 @@
         tryAtMost: function (tries, executor) {
             --tries;
             return new Promise(executor)
-                .catch(err => tries > 0 ? Ble.tryAtMost(tries, executor) : Promise.reject(err));
+                .catch(function (err) {
+                    if (tries > 0) {
+                        Ble.tryAtMost(tries, executor);
+                    } else {
+                        Promise.reject(err);
+                    }
+                });
         },
 
         midiServicePromise: function (device) {
@@ -459,15 +465,15 @@
 
             const midiServicePromise = Ble.midiServicePromise(device)
             Ble.tryAtMost(3, midiServicePromise)
-            .then(() => {
+            .then(function () {
                 // connected successfully, then get device information
                 const deviceInformationServicePromise = Ble.deviceInformationServicePromise(device);
                 Ble.tryAtMost(3, deviceInformationServicePromise)
-                .then(() => {})
+                .then(function () {})
                 .catch(function (error) {
                     // console.log('deviceInformationServicePromise retry failed:' + error);
                 })
-                .then(() => {
+                .then(function () {
                     unityInstance.SendMessage('MidiManager', 'OnMidiInputDeviceAttached', device.id);
                     unityInstance.SendMessage('MidiManager', 'OnMidiOutputDeviceAttached', device.id);
                 });
